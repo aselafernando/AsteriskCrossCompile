@@ -77,5 +77,5 @@ asterisk -f -C /etc/asterisk/asterisk.conf
 
 # Using Compiled Versions
 
-Skip steps 1 and 2 above, and in step 3 pick and choose the versions of libaries you wish to use.
-Lastly you will have to copy over the libraries to the target located in ${ROOTDIR}
+Skip steps 1 and 2 above, and in step 3 pick and choose the versions of libraries you want to use.
+Lastly after step 7, you will have to copy over the libraries to the target located in ${ROOTDIR}
