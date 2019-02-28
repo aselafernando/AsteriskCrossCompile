@@ -4,7 +4,7 @@ BUILDMACH=x86_64-pc-linux-gnu
 TARGETMACH=arm-cortex_a8-linux-gnueabihf
 ROOTDIR=${HOME}/AsteriskCrossCompile/sysroot
 ASTERISKINSTALLDIR=${HOME}/AsteriskCrossCompile/asterisk
-THREADS=16
+THREADS=30
 
 ########################SOURCE URLS############################################
 
