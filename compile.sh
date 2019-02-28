@@ -98,9 +98,7 @@ wget ${URL_LIBSRTP}
 tar zxf v*.tar.gz
 cd libsrtp*
 CFLAGS="-I${ROOTDIR}/include" LDFLAGS="-L${ROOTDIR}/lib" ./configure --enable-openssl --with-openssl-dir=$ROOTDIR --build=$BUILDMACH --host=${TARGETMACH} --prefix=$ROOTDIR
-make libsrtp2.so.1
-make libsrtp2.a
-make install
+make -j${THREADS} make install
 cd ..
 
 #LIBEDIT
@@ -109,7 +107,7 @@ wget ${URL_LIBEDIT}
 tar zxf libedit*.tar.gz
 cd libedit*
 PKG_CONFIG_PATH="${ROOTDIR}/lib/pkgconfig" CFLAGS="-I${ROOTDIR}/include" LDFLAGS="-L${ROOTDIR}/lib" ./configure --build=$BUILDMACH --host=${TARGETMACH} --prefix=$ROOTDIR --enable-shared
-make && make install
+make -j${THREADS} && make install
 cd ..
 
 #ASTERISK
@@ -122,8 +120,7 @@ PKG_CONFIG_LIBDIR="${ROOTDIR}/lib/pkgconfig" CXXCPPFLAGS="-I${ROOTDIR}/include -
 --with-crypto=$ROOTDIR --with-srtp=$ROOTDIR \
 --prefix=${ASTERISKINSTALLDIR}
 make menuselect
-make -j$THREADS 
-make install && make basic-pbx
+make -j$THREADS && make install && make basic-pbx
 cd ..
 
 #CHAN-SCCP-B
@@ -135,6 +132,5 @@ else
 	cd chan-sccp
 fi
 ./configure --with-asterisk=${ASTERISKINSTALLDIR} --build=$BUILDMACH --host=${TARGETMACH} --enable-conference --disable-doxygen-doc --prefix=${ASTERISKINSTALLDIR}
-make -j${THREADS}
-make install
+make -j${THREADS} && make install
 cd ..
