@@ -54,17 +54,17 @@ This is the base installation of Asterisk + Chan SCCP
 6. Edit ${ASTERISKINSTALLDIR}/etc/asterisk/asterisk.conf and modify based on where Asterisk will live on your target device:
 ```
 [directories]
-astetcdir = /etc/asterisk
+astetcdir => /etc/asterisk
 astmoddir => /lib/asterisk/modules
 astvarlibdir => /var/lib/asterisk
-astdbdir = /var/lib/asterisk
+astdbdir => /var/lib/asterisk
 astsbindir => /asterisk/sbin
-astdatadir = /var/lib/asterisk
-astspooldir = /var/spool/asterisk
-astrundir = /var/run/asterisk
-astkeydir = /var/lib/asterisk
-astagidir = /var/lib/asterisk/agi-bin
-astlogdir = /var/log/asterisk
+astdatadir => /var/lib/asterisk
+astspooldir => /var/spool/asterisk
+astrundir => /var/run/asterisk
+astkeydir => /var/lib/asterisk
+astagidir => /var/lib/asterisk/agi-bin
+astlogdir => /var/log/asterisk
 ```
 7. Copy the contents of ${ASTERISKINSTALLDIR} to the desired location on the target
 
