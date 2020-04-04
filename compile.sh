@@ -13,14 +13,14 @@ BUILDDIR=${CURDIR}/build
 ########################SOURCE URLS############################################
 
 URL_ZLIB="http://zlib.net/zlib-1.2.11.tar.gz"
-URL_OPENSSL="https://www.openssl.org/source/openssl-1.1.1a.tar.gz"
+URL_OPENSSL="https://www.openssl.org/source/openssl-1.1.1f.tar.gz"
 URL_JANSSON="http://www.digip.org/jansson/releases/jansson-2.12.tar.gz"
 URL_LIBUUID="https://sourceforge.net/projects/libuuid/files/libuuid-1.0.3.tar.gz/download"
-URL_LIBXML2="ftp://xmlsoft.org/libxml2/libxml2-2.9.9-rc1.tar.gz"
+URL_LIBXML2="ftp://xmlsoft.org/libxml2/libxml2-2.9.10-rc1.tar.gz"
 URL_SQLITE="https://www.sqlite.org/src/tarball/sqlite.tar.gz?r=release"
-URL_LIBSRTP="https://github.com/cisco/libsrtp/archive/v2.2.0.tar.gz"
-URL_LIBEDIT="http://thrysoee.dk/editline/libedit-20181209-3.1.tar.gz"
-URL_ASTERISK="http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-16-current.tar.gz"
+URL_LIBSRTP="https://github.com/cisco/libsrtp/archive/v2.3.0.tar.gz"
+URL_LIBEDIT="http://thrysoee.dk/editline/libedit-20191231-3.1.tar.gz"
+URL_ASTERISK="http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-17-current.tar.gz"
 
 ############################COMPILER########################################
 
@@ -112,6 +112,9 @@ wget ${URL_LIBSRTP} -O libsrtp.tar.gz
 tar zxf libsrtp.tar.gz
 rm libsrtp.tar.gz
 cd libsrtp*
+#The check for openssl_cleanse_broken doesnt work when cross compiling
+#This will assume it isn't broken
+sed -i '5939,5949d;5902,5937d' ./configure
 CFLAGS="-I${ROOTDIR}/include" LDFLAGS="-L${ROOTDIR}/lib" ./configure --enable-openssl --with-openssl-dir=$ROOTDIR --build=$BUILDMACH --host=${TARGETMACH} --prefix=$ROOTDIR
 make libsrtp2.a -j${THREADS} && make libsrtp2.so -j${THREADS} && make install
 cd ..
@@ -139,6 +142,8 @@ PKG_CONFIG_LIBDIR="${ROOTDIR}/lib/pkgconfig" CXXCPPFLAGS="-I${ROOTDIR}/include -
 --prefix=${ASTERISKINSTALLDIR}
 make menuselect
 make -j$THREADS && make install && make basic-pbx
+#Asterisk v17 doesn't seem to install the include files do it manually
+cp -R ./include ${ASTERISKINSTALLDIR}
 cd ..
 
 cd ${ASTERISKINSTALLDIR}/etc/asterisk
