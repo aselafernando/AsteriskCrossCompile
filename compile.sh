@@ -136,9 +136,10 @@ tar zxf asterisk.tar.gz
 rm asterisk.tar.gz
 rm ${ASTERISKINSTALLDIR}/etc/asterisk/asterisk.conf
 cd asterisk-*
+#Asterisk v17 seems to always want to install PJProject in /opt regardless of the prefix. Disabling PJProject for now
 PKG_CONFIG_LIBDIR="${ROOTDIR}/lib/pkgconfig" CXXCPPFLAGS="-I${ROOTDIR}/include -I${ROOTDIR}/include/libxml2 -I${ROOTDIR}/include/srtp2" CXXFLAGS="-I${ROOTDIR}/include -I${ROOTDIR}/include/libxml2 -I${ROOTDIR}/include/srtp2" CPPFLAGS="-I${ROOTDIR}/include -I${ROOTDIR}/include/libxml2 -I${ROOTDIR}/include/srtp2" CFLAGS="-I${ROOTDIR}/include -I${ROOTDIR}/include/libxml2 -I${ROOTDIR}/include/srtp2" LDFLAGS="-L${ROOTDIR}/lib -luuid -lssl -lcrypto" ./configure --build=$BUILDMACH \
 --host=${TARGETMACH} --with-ssl=$ROOTDIR --with-libxml2=$ROOTDIR --with-sqlite3=$ROOTDIR --with-jansson=$ROOTDIR --with-z=$ROOTDIR --disable-xmldoc \
---with-crypto=$ROOTDIR --with-srtp=$ROOTDIR \
+--with-crypto=$ROOTDIR --with-srtp=$ROOTDIR --without-pjproject-bundled \
 --prefix=${ASTERISKINSTALLDIR}
 make menuselect
 make -j$THREADS && make install && make basic-pbx
