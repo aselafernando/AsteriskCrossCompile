@@ -3,10 +3,10 @@ Script to allow cross compilation of Asterisk
 Build tested on Ubuntu 20.04.1
 
 I recommend using crosstool-ng (https://crosstool-ng.github.io/) to generate your cross compiling toolchain and installing in the default directory
-${HOME}/x-tools/${TARGETMACH}/
+$HOME/x-tools/$TARGETMACH/
 
 This script assumes the cross compiling toolchain is installed under
-${HOME}/x-tools/${TARGETMACH}/
+$HOME/x-tools/$TARGETMACH/
 
 The script will also attempt to build the crosstool chain for you if it does not detect one
 
@@ -64,7 +64,7 @@ var/
 ```
 This is the base installation of Asterisk + Chan SCCP
 
-6. Edit ${ASTERISKINSTALLDIR}/etc/asterisk/asterisk.conf and modify based on where Asterisk will live on your target device:
+6. Edit $ASTERISK_INSTALLDIR/etc/asterisk/asterisk.conf and modify based on where Asterisk will live on your target device:
 ```
 [directories]
 astetcdir => /etc/asterisk
@@ -79,7 +79,7 @@ astkeydir => /var/lib/asterisk
 astagidir => /var/lib/asterisk/agi-bin
 astlogdir => /var/log/asterisk
 ```
-7. Copy the contents of ${ASTERISKINSTALLDIR} to the desired location on the target
+7. Copy the contents of ${ASTERISK_INSTALLDIR} to the desired location on the target
 
 8. Run sudo ldconfig -v to update the shared libraries (if you installed the asterisk libraries in a non-standard location you will have to add these to the shared linker paths by creating a file under /etc/ld.so.conf/myCustomLocation.conf and inserting the location of your custom libary directory before running the command)
 
@@ -94,5 +94,5 @@ Skip steps 1 and 2 above, and in step 3 pick and choose the versions of librarie
 Lastly after step 7, you will have to copy over the libraries to the target located in ${SYSROOT}
 
 # Re-compiling
-You can remove directories from the ${BUILDDIR}, or the library from ${SYSROOT} to force the script to recompile that particular module.
-Note: It is not smart enough to work out compile dependencies if you update a single module. In this case I recommend wiping the whole ${BUILDDIR} and ${SYSROOT} directories to force compilation of everything. Similarly, deleting the ${ASTERISK_INSTALLDIR} will also force a compile of asterisk.
+You can remove directories from the $BUILDDIR, or the library from $SYSROOT to force the script to recompile that particular module.
+Note: It is not smart enough to work out compile dependencies if you update a single module. In this case I recommend wiping the whole $BUILDDIR and $SYSROOT directories to force compilation of everything. Similarly, deleting the $ASTERISK_INSTALLDIR will also force a compile of asterisk.
