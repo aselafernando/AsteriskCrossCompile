@@ -109,7 +109,7 @@ if ! command $CC -v &> /dev/null && [ ${CROSS_COMPILE} -eq "1" ]; then
 	wget ${URL_CT} -qO- | tar xJ
 	cd ./crosstool-ng*
 	./configure --enable-local
-	make -j{THREADS}
+	make -j${THREADS}
 	
 	#Beaglebone Black
 	./ct-ng arm-cortex_a8-linux-gnueabiex
