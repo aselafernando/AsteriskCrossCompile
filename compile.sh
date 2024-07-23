@@ -20,26 +20,27 @@ BUILDDIR=${CURDIR}/build
 
 ########################SOURCE URLS############################################
 
-URL_CT="https://github.com/crosstool-ng/crosstool-ng/releases/download/crosstool-ng-1.25.0/crosstool-ng-1.25.0.tar.xz"
+URL_CT="https://github.com/crosstool-ng/crosstool-ng/releases/download/crosstool-ng-1.26.0/crosstool-ng-1.26.0.tar.xz"
 
 #URL_ZLIB="http://zlib.net/zlib-1.2.13.tar.gz" #in glib2
-URL_OPENSSL="https://www.openssl.org/source/openssl-1.1.1q.tar.gz"
-URL_JANSSON="http://digip.org/jansson/releases/jansson-2.13.tar.gz"
+URL_OPENSSL="https://www.openssl.org/source/openssl-3.2.1.tar.gz"
+URL_JANSSON="https://github.com/akheron/jansson/releases/download/v2.14/jansson-2.14.tar.gz"
 URL_LIBUUID="https://sourceforge.net/projects/libuuid/files/libuuid-1.0.3.tar.gz/download"
-URL_LIBXML2="ftp://xmlsoft.org/libxml2/libxml2-2.9.10-rc1.tar.gz"
+URL_LIBXML2="ftp://xmlsoft.org/libxml2/libxml2-2.9.12.tar.gz"
 URL_SQLITE="https://www.sqlite.org/src/tarball/sqlite.tar.gz?r=release"
-URL_LIBSRTP2="https://github.com/cisco/libsrtp/archive/refs/tags/v2.4.2.tar.gz"
-URL_LIBEDIT="https://thrysoee.dk/editline/libedit-20221030-3.1.tar.gz"
+URL_LIBSRTP2="https://github.com/cisco/libsrtp/archive/refs/tags/v2.6.0.tar.gz"
+URL_LIBEDIT="https://thrysoee.dk/editline/libedit-20230828-3.1.tar.gz"
 URL_LIBEVENT="https://github.com/libevent/libevent/archive/refs/tags/release-2.1.12-stable.tar.gz"
-URL_CURL="https://github.com/curl/curl/releases/download/curl-7_86_0/curl-7.86.0.tar.gz"
+#URL_LIBPSL="https://github.com/rockdaboot/libpsl/releases/download/0.21.2/libpsl-0.21.2.tar.gz"
+URL_CURL="https://github.com/curl/curl/releases/download/curl-8_6_0/curl-8.6.0.tar.gz"
 #URL_LIBFFI="https://github.com/libffi/libffi/archive/refs/tags/v3.4.1.tar.gz" #in glib2
-URL_GLIB2="https://download.gnome.org/sources/glib/2.74/glib-2.74.1.tar.xz"
-URL_EXPAT="https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-2.5.0.tar.gz"
-URL_DBUS="https://gitlab.freedesktop.org/dbus/dbus/-/archive/dbus-1.14/dbus-dbus-1.14.tar.gz"
-URL_LIBICAL="https://github.com/libical/libical/archive/refs/tags/v3.0.16.tar.gz"
-URL_NCURSES="https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz"
+URL_GLIB2="https://download.gnome.org/sources/glib/2.78/glib-2.78.4.tar.xz"
+URL_EXPAT="https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.gz"
+URL_DBUS="https://gitlab.freedesktop.org/dbus/dbus/-/archive/dbus-1.14/dbus-dbus-1.14.10.tar.gz"
+URL_LIBICAL="https://github.com/libical/libical/releases/download/v3.0.17/libical-3.0.17.tar.gz"
+URL_NCURSES="https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.4.tar.gz"
 URL_READLINE="https://git.savannah.gnu.org/cgit/readline.git/snapshot/readline-readline-8.2.tar.gz"
-URL_BLUEZ="http://www.kernel.org/pub/linux/bluetooth/bluez-5.65.tar.xz"
+URL_BLUEZ="http://www.kernel.org/pub/linux/bluetooth/bluez-5.73.tar.xz"
 URL_ASTERISK="http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-20-current.tar.gz"
 
 ############################COMPILER########################################
@@ -110,9 +111,10 @@ if ! command $CC -v &> /dev/null && [ ${CROSS_COMPILE} -eq "1" ]; then
 	cd ./crosstool-ng*
 	./configure --enable-local
 	make -j${THREADS}
-	
+
 	#Beaglebone Black
-	./ct-ng arm-cortex_a8-linux-gnueabiex
+	#./ct-ng arm-cortex_a8-linux-gnueabiex
+	./ct-ng arm-cortex_a8-linux-gnueabi
 	#Beaglebone Black
 	sed -i "s/# CT_ARCH_FLOAT_HW is not set/CT_ARCH_FLOAT_HW=y/g" .config
 	#Beaglebone Black
@@ -121,12 +123,11 @@ if ! command $CC -v &> /dev/null && [ ${CROSS_COMPILE} -eq "1" ]; then
 	sed -i 's/CT_ARCH_FLOAT="soft"/CT_ARCH_FLOAT="hard"/g' .config
 	#Beaglebone Black
 	sed -i 's/CT_ARCH_FPU=""/CT_ARCH_FPU="neon"/g' .config
-
 	#Set number of threads
 	sed -i "s/CT_PARALLEL_JOBS=0/CT_PARALLEL_JOBS=${THREADS}/g" .config
 	./ct-ng menuconfig
 	#zlib version bug
-	sed -i 's/CT_ZLIB_VERSION="1.2.12"/CT_ZLIB_VERSION="1.2.13"/g' .config
+	#sed -i 's/CT_ZLIB_VERSION="1.2.12"/CT_ZLIB_VERSION="1.2.13"/g' .config
 	./ct-ng build
 fi
 
@@ -255,7 +256,8 @@ if [ ! -d ./libsrtp* ] || ! checkLib libsrtp2; then
 	PKG_CONFIG_LIBDIR="${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/local/lib/pkgconfig" \
 	CPPFLAGS=${GLOBAL_CPPFLAGS} CFLAGS=${GLOBAL_CFLAGS} CXXFLAGS=${GLOBAL_CXXFLAGS} LDFLAGS=${GLOBAL_LDFLAGS} \
 	./configure --enable-openssl --build=${BUILDMACH} --host=${TARGETMACH} --prefix=${SYSROOT}
-	make libsrtp2.a -j${THREADS} && make libsrtp2.so.1 -j${THREADS} && make install
+	#make libsrtp2.a -j${THREADS} && make libsrtp2.so.1 -j${THREADS} && make install
+	make shared_library -j${THREADS} && make install
 	cd ${BUILDDIR}
 	checkLibInstall libsrtp2
 fi
@@ -289,6 +291,20 @@ if [ ! -d ./libevent* ] || ! checkLib libevent; then
 	checkLibInstall libevent
 fi
 
+#LIBPSL (For CURL)
+#if [ ! -d ./libpsl* ] || ! checkLib libpsl; then
+#    if [ ! -d ./libpsl* ]; then
+#        wget ${URL_LIBPSL} -qO- | tar xz
+#    fi
+#    cd ./libpsl*
+#    PKG_CONFIG_LIBDIR="${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/local/lib/pkgconfig" \
+#    CPPFLAGS=${GLOBAL_CPPFLAGS} CFLAGS=${GLOBAL_CFLAGS} CXXFLAGS=${GLOBAL_CXXFLAGS} LDFLAGS=${GLOBAL_LDFLAGS} \
+#    ./configure --build=${BUILDMACH} --host=${TARGETMACH} --prefix=${SYSROOT} --enable-shared
+#    make -j${THREADS} && make install
+#    cd ${BUILDDIR}
+#    checkLibInstall libpsl
+#fi
+
 #CURL
 if [ ! -d ./curl* ] || ! checkLib libcurl; then
 	if [ ! -d ./curl* ]; then
@@ -297,7 +313,8 @@ if [ ! -d ./curl* ] || ! checkLib libcurl; then
 	cd ./curl*
 	PKG_CONFIG_LIBDIR="${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/local/lib/pkgconfig" \
 	CPPFLAGS=${GLOBAL_CPPFLAGS} CFLAGS=${GLOBAL_CFLAGS} CXXFLAGS=${GLOBAL_CXXFLAGS} LDFLAGS=${GLOBAL_LDFLAGS} \
-	./configure --build=${BUILDMACH} --host=${TARGETMACH} --prefix=${SYSROOT} --enable-shared --with-openssl
+	./configure --build=${BUILDMACH} --host=${TARGETMACH} --prefix=${SYSROOT} --enable-shared --with-openssl \
+    --without-libpsl
 	make -j${THREADS} && make install
 	cd ${BUILDDIR}
 	checkLibInstall libcurl
@@ -435,11 +452,12 @@ if [ ! -d ./asterisk* ] || [ ! -f ${ASTERISK_INSTALLDIR}/sbin/asterisk ]; then
 	PKG_CONFIG_LIBDIR="${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/local/lib/pkgconfig" \
 	CFLAGS="${GLOBAL_CPPFLAGS} `pkg-config --cflags-only-I zlib sqlite3 uuid libcurl libcrypto libssl` ${GLOBAL_CFLAGS}" \
 	CXXFLAGS="${GLOBAL_CPPFLAGS} `pkg-config --cflags-only-I zlib sqlite3 uuid libcurl libcrypto libssl` ${GLOBAL_CXXFLAGS}" \
-	LDFLAGS="${GLOBAL_LDFLAGS} `pkg-config --libs zlib sqlite3 uuid`" \
+	LDFLAGS="${GLOBAL_LDFLAGS} `pkg-config --libs zlib libcrypto libssl sqlite3 uuid`" \
 	./configure \
 	--build=${BUILDMACH} --host=${TARGETMACH} \
 	--with-pjproject-bundled \
 	--disable-xmldoc \
+    --with-ssl --with-crypto --with-srtp \
 	--prefix=${ASTERISK_INSTALLDIR}
 	make menuselect
 	make -j${THREADS} && sudo make install && sudo rm -rf /opt/pjproject && sudo chown -R $USER:$USER ${ASTERISK_INSTALLDIR} && make basic-pbx && make install-headers
@@ -466,6 +484,7 @@ fi
 #CHAN-SCCP-B
 if [ -d "chan-sccp" ]; then
 	cd chan-sccp
+    git fetch
 	git pull
 else
 	git clone https://github.com/chan-sccp/chan-sccp.git chan-sccp
